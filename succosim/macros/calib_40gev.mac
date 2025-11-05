@@ -1,0 +1,8 @@
+# initialise the simulation
+/run/initialize
+
+# select energy
+/gun/energy 40 GeV
+
+# shot 50k events
+/run/beamOn 50000
