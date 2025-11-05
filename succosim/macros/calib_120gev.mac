@@ -1,8 +1,0 @@
-# initialise the simulation
-/run/initialize
-
-# select energy
-/gun/energy 120 GeV
-
-# shot 20k events
-/run/beamOn 20000
