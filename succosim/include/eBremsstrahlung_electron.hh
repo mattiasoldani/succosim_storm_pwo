@@ -1,0 +1,143 @@
+﻿//
+// ********************************************************************
+// * License and Disclaimer                                           *
+// *                                                                  *
+// * The  Geant4 software  is  copyright of the Copyright Holders  of *
+// * the Geant4 Collaboration.  It is provided  under  the terms  and *
+// * conditions of the Geant4 Software License,  included in the file *
+// * LICENSE and available at  http://cern.ch/geant4/license .  These *
+// * include a list of copyright holders.                             *
+// *                                                                  *
+// * Neither the authors of this software system, nor their employing *
+// * institutes,nor the agencies providing financial support for this *
+// * work  make  any representation or  warranty, express or implied, *
+// * regarding  this  software system or assume any liability for its *
+// * use.  Please see the license in the file  LICENSE  and URL above *
+// * for the full disclaimer and the limitation of liability.         *
+// *                                                                  *
+// * This  code  implementation is the result of  the  scientific and *
+// * technical work of the GEANT4 collaboration.                      *
+// * By using,  copying,  modifying or  distributing the software (or *
+// * any work based  on the software)  you  agree  to acknowledge its *
+// * use  in  resulting  scientific  publications,  and indicate your *
+// * acceptance of all terms of the Geant4 Software license.          *
+// ********************************************************************
+//
+//
+// -------------------------------------------------------------------
+//
+// GEANT4 Class header file
+//
+//
+// File name:     G4eBremsstrahlung
+//
+// Author:        Laszlo Urban
+//
+// Creation date: 24.06.1996
+//
+// Modifications:
+//
+// 01-10-96 new type G4OrderedTable;  ComputePartialSumSigma()
+// 20-03-97 new energy loss+ionisation+brems scheme, L.Urban
+// 01-09-98 new method  PrintInfo()
+// 10-02-00 modifications , new e.m. structure, L.Urban
+// 07-08-00 new cross section/en.loss parametrisation, LPM flag , L.Urban
+// 09-08-01 new methods Store/Retrieve PhysicsTable (mma)
+// 19-09-01 come back to previous process name "eBrem"
+// 29-10-01 all static functions no more inlined (mma)
+// 07-01-02 new design of em processes (V.Ivanchenko)
+// 26-12-02 secondary production moved to derived classes (VI)
+// 24-01-03 Make models region aware (V.Ivanchenko)
+// 05-02-03 Fix compilation warnings (V.Ivanchenko)
+// 08-08-03 STD substitute standard  (V.Ivanchenko)
+// 17-10-03 PrintInfoDefinition - virtual (V.Ivanchenko)
+// 12-11-03 G4EnergyLossSTD -> G4EnergyLossProcess (V.Ivanchenko)
+// 21-01-04 Migrade to G4ParticleChangeForLoss (V.Ivanchenko)
+// 04-11-04 add gamma threshold (V.Ivanchenko)
+// 08-11-04 Migration to new interface of Store/Retrieve tables (V.Ivantchenko)
+// 08-04-05 Major optimisation of internal interfaces (V.Ivantchenko)
+// 11-04-04 Move MaxSecondaryEnergy to models (V.Ivanchenko)
+//
+// Class Description:
+//
+// This class manages the bremsstrahlung for e-/e+
+// it inherites from G4VContinuousDiscreteProcess via G4VEnergyLoss.
+//
+
+// -------------------------------------------------------------------
+//
+
+#ifndef eBremsstrahlung_electron_h
+#define eBremsstrahlung_electron_h 1
+
+#include "G4VEnergyLossProcess.hh"
+#include "G4DynamicParticle.hh"
+#include "G4Electron.hh"
+#include "G4Positron.hh"
+//#include "LogicalCrystalVolume.hh"
+
+class G4Material;
+///
+/// \brief The eBremsstrahlung class этот класс для моделирования тормозного излучения
+/// в кристаллах, основан на стандартном классе из Geant4.
+/// This class is based on standard Geant4 class G4eBremsstrahlung for
+/// simulation Bremsstrahlung and it is used for simulation Bremsstrahlung
+/// into oriented crystal
+///
+class eBremsstrahlung_electron : public G4VEnergyLossProcess
+{
+
+public:
+
+  explicit eBremsstrahlung_electron(const G4String& name = "eBrem_electron");
+
+  virtual ~eBremsstrahlung_electron();
+
+  virtual G4bool IsApplicable(const G4ParticleDefinition& p) final;
+  
+  // print documentation in html format
+  virtual void ProcessDescription(std::ostream&) const override;
+//    // Step limit from cross section
+//  virtual G4double PostStepGetPhysicalInteractionLength(
+//                                      const G4Track& track,
+//                                      G4double   previousStepSize,
+//                                      G4ForceCondition* condition);
+//    // PostStep sampling of secondaries
+//      virtual G4VParticleChange* PostStepDoIt(const G4Track&,
+//                                              const G4Step&);
+//    // Step limit from AlongStep
+//    virtual G4double AlongStepGetPhysicalInteractionLength(
+//            const G4Track&,
+//            G4double  previousStepSize,
+//            G4double  currentMinimumStep,
+//            G4double& currentSafety,
+//            G4GPILSelection* selection);
+//    // AlongStep computations
+//     virtual G4VParticleChange* AlongStepDoIt(const G4Track&,
+//                                              const G4Step&);
+
+
+protected:
+
+  // Print out of the class parameters
+  virtual void StreamProcessInfo(std::ostream& outFile) const override;
+
+  virtual void 
+  /// The changing is in this function
+  InitialiseEnergyLossProcess(const G4ParticleDefinition*,
+			      const G4ParticleDefinition*) override;
+
+  G4bool   isInitialised;
+
+private:
+
+  // hide assignment operator
+  eBremsstrahlung_electron & operator=(const eBremsstrahlung_electron &right) = delete;
+  eBremsstrahlung_electron(const eBremsstrahlung_electron&) = delete;
+
+};
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
+
+#endif
+
